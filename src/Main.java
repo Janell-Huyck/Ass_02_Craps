@@ -3,40 +3,43 @@ import java.util.Random;
 
 public class Main {
 
-    private static final Random rand = new Random(); // A shared Random instance
+    private static final Random rand = new Random(); // Shared Random instance for consistent dice rolls
 
     public static void main(String[] args) {
-        int crapsRoll;
-        boolean playAgain = true;
-        String gameResult;
-        Scanner pipe = new Scanner(System.in);
-
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to Craps!");
-        
-        while (playAgain) {
-            System.out.println("Rolling the dice!");
-            crapsRoll = rollDice();
-            System.out.println("You rolled a " + crapsRoll + "!");
-
-            if (crapsRoll == 7 || crapsRoll == 11) {
-                gameResult = "That's a natural! Congratulations, you win!";
-            } else if (crapsRoll == 2 || crapsRoll == 3 || crapsRoll == 12) {
-                gameResult = "That's a craps! Sorry, you lose.";
-            } else {
-                gameResult = rollForPoint(crapsRoll);
-            }
-
-            System.out.println(gameResult);
-
-            playAgain = checkPlayAgain(pipe);
-        }
+        playCraps(scanner);
         System.out.println("Thanks for playing Craps! Goodbye!");
-
-        pipe.close();
+        scanner.close();
     }
 
-    private static boolean checkPlayAgain(Scanner pipe) {
-        return SafeInput.getYNConfirm(pipe, "Would you like to play again?");
+    private static void playCraps(Scanner scanner) {
+        boolean playAgain = true;
+
+        while (playAgain) {
+            System.out.println("Rolling the dice!");
+            int crapsRoll = rollDice();
+            System.out.println("You rolled a " + crapsRoll + "!");
+
+            String gameResult = getGameResult(crapsRoll);
+            System.out.println(gameResult);
+
+            playAgain = checkPlayAgain(scanner);
+        }
+    }
+
+    private static boolean checkPlayAgain(Scanner scanner) {
+        return SafeInput.getYNConfirm(scanner, "Would you like to play again?");
+    }
+
+    private static String getGameResult(int crapsRoll) {
+        if (crapsRoll == 7 || crapsRoll == 11) {
+            return "That's a natural! Congratulations, you win!";
+        } else if (crapsRoll == 2 || crapsRoll == 3 || crapsRoll == 12) {
+            return "That's a craps! Sorry, you lose.";
+        } else {
+            return rollForPoint(crapsRoll);
+        }
     }
 
     private static String rollForPoint(int crapsRoll) {
@@ -44,7 +47,7 @@ public class Main {
         while (true) {
             System.out.print("Rolling the dice!\t");
             int pointRoll = rollDice();
-            System.out.print("You rolled a " + pointRoll + "!\n");
+            System.out.println("You rolled a " + pointRoll + "!");
             if (pointRoll == 7) {
                 return "That's a craps! Sorry, you lose.";
             } else if (pointRoll == crapsRoll) {
